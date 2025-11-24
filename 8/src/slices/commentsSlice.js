@@ -14,7 +14,19 @@ const commentsSlice = createSlice({
     addComment: commentsAdapter.addOne,
   },
   // BEGIN (write your solution here)
+  extraReducers: (builder) => {
+    builder.addCase(usersActions.removeUser, (state, action) => {
+      const userID = action.payload;
+      const restEntities = Object.values(state.entities).filter((item) => item.author !== userID);
+      commentsAdapter.setAll(state, restEntities);
+    });
 
+    builder.addCase(postsActions.removePost, (state, action) => {
+      const post = action.payload;
+      const postCommentsID = post.comments || [];
+      commentsAdapter.removeMany(state, postCommentsID);
+    });
+  }
   // END
 });
 
